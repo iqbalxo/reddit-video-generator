@@ -20,7 +20,7 @@
 Clone the repository and install the required dependencies:
 
 ```bash
-git clone https://github.com/your-repo/reddit-video-generator.git
+git clone https://github.com/iqbalxo/reddit-video-generator.git
 cd reddit-video-generator
 pip install -r requirements.txt
 ```
