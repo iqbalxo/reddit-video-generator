@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reddit Video Generator</title>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Beta Testing</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1>Reddit Video Generator</h1>
+
+        <form id="generate-form">
+            <label for="reddit-url">Enter Reddit URL:</label>
+            <input type="text" id="reddit-url" name="reddit_url">
+            <button type="submit">Generate Video</button>
+        </form>
+
+        <div id="loading" style="display:none;">
+            <img src="https://media.tenor.com/UDC3OVGA1jcAAAAi/icon.gif" alt="Loading..." class="hourglass">
+            <p>Generating video...</p>
+        </div>
+
+        <div id="result" style="display:none;">
+            <h3>Video generated successfully!</h3>
+            <a id="download-link" href="#" download>Download Video</a>
+        </div>
+    </div>
+
+    <!-- New "How It Works" Section -->
+    <section class="how-it-works">
+        <div class="work-step">
+            <p>Step 1: Enter the Reddit URL of the post.</p>
+        </div>
+        <div class="work-step">
+            <p>Step 2: Click 'Generate Video' and wait while we process the post.</p>
+        </div>
+        <div class="work-step">
+            <p>Step 3: Download the video and enjoy!</p>
+        </div>
+    </section>
+
+    <script>
+        document.getElementById("generate-form").onsubmit = async function (e) {
+            e.preventDefault();
+
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+
+            const redditUrl = document.getElementById("reddit-url").value;
+            const response = await fetch('/generate-video', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ reddit_url: redditUrl })
+            });
+
+            const result = await response.json();
+
+            document.getElementById('loading').style.display = 'none';
+
+            if (result.status === 'success') {
+                const downloadLink = document.getElementById('download-link');
+                downloadLink.href = `/download/${result.video_file}`;
+                document.getElementById('result').style.display = 'block';
+            } else {
+                alert(result.error);
+            }
+        }
+    </script>
+</body>
+</html>
